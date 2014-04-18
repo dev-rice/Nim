@@ -23,10 +23,13 @@ game board = do
 	let valid =  validRow (read row) board
 	if (valid)
 		then do putStrLn "Valid Row";
+			-- Prompt for and remove n sticks
+			-- Make computer move
+			-- call game with the modified board
 		else do 
 			putStrLn "Please enter a valid row.";
 			game board
-	-- Make computer move
+	
 
 
 playGame :: IO()
