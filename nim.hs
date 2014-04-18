@@ -15,7 +15,10 @@ validMove row number board = validRow && hasSticks && (not emptyRow)
 
 
 removeSticks :: Int -> Int -> Board -> Board
-removeSticks row number board = board
+removeSticks _ _ [] = []
+removeSticks row number (x:xs)
+	| row == 0 = (x - number):(removeSticks (row - 1) number xs)
+	| otherwise = x:(removeSticks (row - 1) number xs)
 
 game :: Board -> IO()
 game board = do
@@ -29,9 +32,10 @@ game board = do
 	let valid =  validMove (read row) (read number) board
 	if (valid)
 		then do putStrLn "Valid Move!";
-			-- Prompt for and remove n sticks
+			let new_board = removeSticks (read row) (read number) board
 			-- Make computer move
-			-- call game with the modified board
+			game new_board
+			
 		else do 
 			putStrLn "Please enter a valid move.";
 			game board
