@@ -6,12 +6,14 @@ board = [4,3,7]
 displayBoard :: Board -> IO ()
 displayBoard board = do
 	mapM_ (putStrLn) $ map (\x -> replicate x 'X') board
+	putStrLn
 
 validMove :: Int -> Int -> Board -> Bool
 validMove row number board = validRow && hasSticks && (not emptyRow)
 	where emptyRow = (board !! row == 0)
 	      validRow = (row < (length board))
 	      hasSticks = (board !! row) >= number
+
 
 removeSticks :: Int -> Int -> Board -> Board
 removeSticks _ _ [] = []
@@ -21,6 +23,11 @@ removeSticks row number (x:xs)
 
 winner :: Board -> Bool
 winner board = sum( board ) == 0
+
+smart_computer :: Board -> Board
+smart_computer (x:xs)
+	| x /= 0 = removeSticks 0 x (x:xs)
+	| otherwise = x:(dumb_computer xs)
 
 game :: Board -> IO()
 game board = do
@@ -42,13 +49,14 @@ game board = do
 				else do 
 
 			-- Make computer move
-			let won = winner (new_board)
+			let end_board = smart_computer new_board
+			let won = winner (end_board)
 			
 			if(won)
-				then do putStrLn "Human won!"
+				then do putStrLn "Computer won!"
 				else do 
 
-			game new_board
+			game end_board
 			
 		else do 
 			putStrLn "Please enter a valid move.";

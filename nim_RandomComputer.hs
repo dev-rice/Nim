@@ -1,4 +1,5 @@
 import System.Random
+import Control.Concurrent
 type Board = [Int]
 
 board :: Board
@@ -6,7 +7,8 @@ board = [4,3,7]
 
 displayBoard :: Board -> IO ()
 displayBoard board = do
-	mapM_ (putStrLn) $ map (\x -> replicate x '|') board
+	mapM_ (putStrLn) $ map (\x -> replicate x 'X') board
+	putStrLn "" 
 
 validMove :: Int -> Int -> Board -> Bool
 validMove row number board = validRow && hasSticks && (not emptyRow)
@@ -24,17 +26,32 @@ removeSticks row number (x:xs)
 winner :: Board -> Bool
 winner board = sum( board ) == 0
 
-random_Computer board = do
-	gen <- getStdGen
-	let row = (randomRs (1,3) gen)
-	if(board!!row /= 0)
+random_computer :: Board -> IO ()
+random_computer board = do
+	row <- randomRIO(0,length(board) - 1)
+	let valid_row = board !! row /= 0
+	if(valid_row)
 		then do
-			let num = (randomRs (1,board!!row) gen)
-			let new_board = remove_sticks (read row) (read num) board
-			return new_board
+			num <- randomRIO (1, board !! row)
+			let new_board = removeSticks row num board
+
+			if (winner(new_board))
+				then do putStrLn "Computer won!"
+				else do
+
+			game new_board
 		else do
-			let new_board = random_Computer board
-			return new_board
+			random_computer board
+
+let_computer_think :: IO()
+let_computer_think = do
+	putStr "Computer thinking ."
+	threadDelay(500000)
+	putStr " ."
+	threadDelay(500000)
+	putStr " ."
+	threadDelay(500000)
+	putStrLn ""
 
 game :: Board -> IO()
 game board = do
@@ -47,17 +64,20 @@ game board = do
 
 	let valid =  validMove (read row) (read number) board
 	if (valid)
-		then do putStrLn "Valid Move!";
+		then do
 			let new_board = removeSticks (read row) (read number) board
+			
 			let won = winner (new_board)
 			if(won)
 				then do putStrLn "Human won!"
 				else do 
-			-- Make computer move
-			game new_board
+			
+			displayBoard new_board
+
+			random_computer new_board
+			let_computer_think
 			
 		else do 
-			putStrLn "Please enter a valid move.";
 			game board
 	
 

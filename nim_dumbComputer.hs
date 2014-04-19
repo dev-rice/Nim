@@ -1,3 +1,5 @@
+import Control.Concurrent
+
 type Board = [Int]
 
 board :: Board
@@ -5,7 +7,8 @@ board = [4,3,7]
 
 displayBoard :: Board -> IO ()
 displayBoard board = do
-	mapM_ (putStrLn) $ map (\x -> replicate x '|') board
+	mapM_ (putStrLn) $ map (\x -> replicate x 'X') board
+	putStrLn ""
 
 validMove :: Int -> Int -> Board -> Bool
 validMove row number board = validRow && hasSticks && (not emptyRow)
@@ -28,6 +31,16 @@ dumb_computer (x:xs)
 	| x /= 0 = removeSticks 0 x (x:xs)
 	| otherwise = x:(dumb_computer xs)
 
+let_computer_think :: IO()
+let_computer_think = do
+	putStr "Computer thinking ."
+	threadDelay(500000)
+	putStr " ."
+	threadDelay(500000)
+	putStr " ."
+	threadDelay(500000)
+	putStrLn ""
+
 game :: Board -> IO()
 game board = do
 	displayBoard board
@@ -47,11 +60,14 @@ game board = do
 				then do putStrLn "Human won!"
 				else do 
 
+			displayBoard new_board
 
 			-- Make computer move
 			let end_board = dumb_computer new_board
 			let won = winner (end_board)
 			
+			let_computer_think
+
 			if(won)
 				then do putStrLn "Computer won!"
 				else do 
