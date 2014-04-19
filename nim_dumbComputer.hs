@@ -49,13 +49,14 @@ game board = do
 
 
 			-- Make computer move
-			let won = winner (new_board)
+			let end_board = dumb_computer new_board
+			let won = winner (end_board)
 			
 			if(won)
-				then do putStrLn "Human won!"
+				then do putStrLn "Computer won!"
 				else do 
 
-			game new_board
+			game end_board
 			
 		else do 
 			putStrLn "Please enter a valid move.";
