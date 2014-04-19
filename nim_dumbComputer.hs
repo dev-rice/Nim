@@ -52,7 +52,7 @@ game board = do
 
 	let valid =  validMove (read row) (read number) board
 	if (valid)
-		then do putStrLn "Valid Move!";
+		then do 
 			let new_board = removeSticks (read row) (read number) board
 			let won = winner (new_board)
 			
