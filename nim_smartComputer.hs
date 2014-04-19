@@ -35,11 +35,11 @@ msb number = floor $ logBase 2 (fromIntegral number)
 
 find_xk :: Int -> Board -> Int
 find_xk s board
-	| s > maximum || num == 0 = maximum
-	| s /= 1 = num
+	| s > maximum || num == [] || (head num) == 0  = maximum
+	| s /= 1 = head $ num
 	| otherwise = head $ filter (odd) board
 	where    maximum = foldr1 (max) board
-		 num = head $ filter (\x -> mod x s == 0) board
+		 num = filter (\x -> mod x s == 0) board
 
 smart_computer :: Board -> Board
 smart_computer board = removeSticks row to_remove board
