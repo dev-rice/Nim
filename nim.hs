@@ -20,6 +20,9 @@ removeSticks row number (x:xs)
 	| row == 0 = (x - number):(removeSticks (row - 1) number xs)
 	| otherwise = x:(removeSticks (row - 1) number xs)
 
+winner :: Board -> Bool
+winner board = sum( board ) == 0
+
 game :: Board -> IO()
 game board = do
 	displayBoard board
@@ -33,6 +36,10 @@ game board = do
 	if (valid)
 		then do putStrLn "Valid Move!";
 			let new_board = removeSticks (read row) (read number) board
+			let won = winner (new_board)
+			if(won)
+				then do putStrLn "Human won!"
+				else do 
 			-- Make computer move
 			game new_board
 			
